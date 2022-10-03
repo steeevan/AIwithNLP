@@ -1,33 +1,38 @@
-from io import StringIO
-from io import open
-from operator import contains
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
 from pdfminer.pdfinterp import PDFResourceManager
+from pdfminer.layout import LAParams
+from pdfminer.converter import TextConverter
+from filter import Filter
+from io import StringIO
+from operator import contains
+from io import open
 import time
 import os
 
-from filter import Filter
 
 
-# process pd
+
+'''
+read_pdf
+This script allows to be given a pdf file with its directory, and be able to scan in the data from  the pdf.
+
+'''
 def read_pdf(pdf):
-    # resource manager
-    rsrcmgr = PDFResourceManager()
-    retstr = StringIO()
+    # controller which operates on the device
+    resource = PDFResourceManager()
+    rets = StringIO()
     laparams = LAParams()
-    # device
-    device = TextConverter(rsrcmgr, retstr, laparams=laparams)
-    process_pdf(rsrcmgr, device, pdf)
+    # main control for scanning in pdf
+    device = TextConverter(resource, rets, laparams=laparams)
+    process_pdf(resource, device, pdf)
     device.close()
-    content = retstr.getvalue()
-    retstr.close()
+    content = rets.getvalue()
+    rets.close()
     # get lines
     lines = str(content).split("\n")
     return lines
 
 
-# get key parts
+
 def key_parts(path):
     list_of_content = []
     list_of_keys = []
@@ -44,8 +49,8 @@ def key_parts(path):
     return list_of_keys
 
 
-# form Q
-def generateQ(parts):
+
+def generate(parts):
     str = ""
     for part in parts:
         # print(part)
